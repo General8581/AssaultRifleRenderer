@@ -1,0 +1,100 @@
+package net.general_85.warmachines.item.client.render;
+
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.general_85.warmachines.item.GunItem;
+import net.general_85.warmachines.item.client.model.TwoHandedGunModel;
+import net.general_85.warmachines.util.guns.GunAnimationUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.AnimationUtils;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.renderer.GeoItemRenderer;
+import software.bernie.geckolib.renderer.GeoObjectRenderer;
+import software.bernie.geckolib.util.RenderUtils;
+
+import java.nio.ByteBuffer;
+
+
+
+public class AssaultRifleRenderer extends GeoItemRenderer<GunItem> {
+
+
+    private static final RenderStateShard.TransparencyStateShard NO_TRANSPARENCY = ;
+    private static final RenderStateShard.ShaderStateShard RENDERTYPE_ENTITY_CUTOUT_SHADER = ;
+
+    public AssaultRifleRenderer() {
+        super(new TwoHandedGunModel());
+
+    }
+
+
+    private VertexConsumer vertexConsumer;
+    private MultiBufferSource multiBufferSource;
+    private PoseStack poseStack;
+
+    @Override
+    public void preRender(PoseStack poseStack, GunItem gunItem, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+
+
+        if (renderPerspective.firstPerson()){
+
+            model.getBone("right_arm").get().setHidden(false);
+            model.getBone("left_arm").get().setHidden(false);
+
+
+
+            Player player = Minecraft.getInstance().player;
+            assert player != null;
+            ItemStack heldItem = player.getMainHandItem();
+            CompoundTag compoundTag = heldItem.getOrCreateTag();
+
+            if (compoundTag.getBoolean("isAimingDefault")){
+
+                model.getBone("whole").get().setPosX(gunItem.getAdsXPos());
+                model.getBone("whole").get().setPosY(gunItem.getAdsYPos()); //0.25
+                model.getBone("whole").get().setPosZ(gunItem.getAdsZPos());
+
+                //  model.getBone("main").get().setRotX(2);
+
+            } else {
+
+                model.getBone("gun").get().resetStateChanges();
+
+            }
+        } else {
+            model.getBone("right_arm").get().setHidden(true);
+            model.getBone("left_arm").get().setHidden(true);
+        }
+
+
+        Player player = Minecraft.getInstance().player;
+        assert player != null;
+        ItemStack heldItem = player.getMainHandItem();
+        CompoundTag compoundTag = heldItem.getOrCreateTag();
+
+        if (compoundTag.getBoolean("magIsHidden")){
+
+            model.getBone("magazine").get().setHidden(true);
+        } else {
+            model.getBone("magazine").get().setHidden(false);
+        }
+
+        super.preRender(poseStack, gunItem, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+    }
+}
