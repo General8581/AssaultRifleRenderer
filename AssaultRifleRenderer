@@ -101,28 +101,35 @@ public class AssaultRifleRenderer extends GeoItemRenderer<GunItem> {
     }
 
 
-    private static RenderType noShadows(ResourceLocation texture) {
-        return RenderType.create("noshadows",
-                DefaultVertexFormat.NEW_ENTITY,
-                VertexFormat.Mode.QUADS,
-                256,
-                false,
-                false,
-                RenderType.CompositeState.builder()
-                        .setShaderState(new RenderStateShard.ShaderStateShard())//RENDERTYPE_ENTITY_CUTOUT_SHADER
-                        .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
-                     //   .setTransparencyState(new RenderStateShard.TransparencyStateShard(texture, Runnable, false))
-                        .setLightmapState(new RenderStateShard.LightmapStateShard(false))
-                        .setOverlayState(new RenderStateShard.OverlayStateShard(true))
-                        .createCompositeState(true)
-                     );
-
-    }
-
-
+/*
     @Override
     public RenderType getRenderType(GunItem animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
-        return noShadows(texture);
+
+        return noShadows(getTextureLocation(animatable));
     }
+
+ */
+
+    public void renderByItem(ItemStack stack, ItemDisplayContext transformType, PoseStack poseStack,
+                             MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        this.animatable = (GunItem) stack.getItem();
+        this.currentItemStack = stack;
+        this.renderPerspective = transformType;
+
+        if (transformType == ItemDisplayContext.GUI) {
+            renderInGui(transformType, poseStack, bufferSource, packedLight, packedOverlay);
+        } else {
+         //   RenderType renderType = getRenderType(this.animatable, getTextureLocation(this.animatable), bufferSource, Minecraft.getInstance().getFrameTime());
+         //   VertexConsumer buffer = ItemRenderer.getFoilBufferDirect(bufferSource, renderType, false, this.currentItemStack != null && this.currentItemStack.hasFoil());
+
+         //   defaultRender(poseStack, this.animatable, bufferSource, renderType, buffer,
+          //          0, Minecraft.getInstance().getFrameTime(), packedLight);
+
+            noShadows(getTextureLocation(animatable));
+            
+        }
+    }
+
+
 
 }
