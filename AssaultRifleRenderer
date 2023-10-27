@@ -34,9 +34,11 @@ import java.nio.ByteBuffer;
 
 public class AssaultRifleRenderer extends GeoItemRenderer<GunItem> {
 
-
-    private static final RenderStateShard.TransparencyStateShard NO_TRANSPARENCY = ;
-    private static final RenderStateShard.ShaderStateShard RENDERTYPE_ENTITY_CUTOUT_SHADER = ;
+  //  private static RenderStateShard.LightmapStateShard NO_LIGHTMAP;
+    //final
+    //final
+  // private static RenderStateShard.TransparencyStateShard NO_TRANSPARENCY;
+   //private static RenderStateShard.ShaderStateShard RENDERTYPE_ENTITY_CUTOUT_SHADER;
 
     public AssaultRifleRenderer() {
         super(new TwoHandedGunModel());
@@ -97,4 +99,30 @@ public class AssaultRifleRenderer extends GeoItemRenderer<GunItem> {
 
         super.preRender(poseStack, gunItem, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
+
+
+    private static RenderType noShadows(ResourceLocation texture) {
+        return RenderType.create("noshadows",
+                DefaultVertexFormat.NEW_ENTITY,
+                VertexFormat.Mode.QUADS,
+                256,
+                false,
+                false,
+                RenderType.CompositeState.builder()
+                        .setShaderState(new RenderStateShard.ShaderStateShard())//RENDERTYPE_ENTITY_CUTOUT_SHADER
+                        .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
+                     //   .setTransparencyState(new RenderStateShard.TransparencyStateShard(texture, Runnable, false))
+                        .setLightmapState(new RenderStateShard.LightmapStateShard(false))
+                        .setOverlayState(new RenderStateShard.OverlayStateShard(true))
+                        .createCompositeState(true)
+                     );
+
+    }
+
+
+    @Override
+    public RenderType getRenderType(GunItem animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+        return noShadows(texture);
+    }
+
 }
