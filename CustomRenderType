@@ -1,0 +1,32 @@
+package net.general_85.warmachines.item.client.render;
+
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+
+public class CustomRenderType extends RenderType {
+    public CustomRenderType(String pName, VertexFormat pFormat, VertexFormat.Mode pMode, int pBufferSize, boolean pAffectsCrumbling, boolean pSortOnUpload, Runnable pSetupState, Runnable pClearState) {
+        super(pName, pFormat, pMode, pBufferSize, pAffectsCrumbling, pSortOnUpload, pSetupState, pClearState);
+    }
+
+
+    public static RenderType noShadows(ResourceLocation texture) {
+        return RenderType.create("noshadows",
+                DefaultVertexFormat.NEW_ENTITY,
+                VertexFormat.Mode.QUADS,
+                256,
+                false,
+                false,
+                RenderType.CompositeState.builder()
+                        .setShaderState(RENDERTYPE_ENTITY_CUTOUT_SHADER)
+                        .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
+                        .setTransparencyState(NO_TRANSPARENCY)
+                        .setLightmapState(NO_LIGHTMAP)
+                        .setOverlayState(OVERLAY)
+                        .createCompositeState(true)
+        );
+
+    }
+}
