@@ -1,0 +1,103 @@
+package net.general_85.warmachines.item.custom.gun;
+
+import net.general_85.warmachines.ModGunItems;
+import net.general_85.warmachines.ModMagazineItems;
+import net.general_85.warmachines.WarMachines;
+import net.general_85.warmachines.item.custom.AssaultRifleItem;
+import net.general_85.warmachines.item.client.render.AssaultRifleRenderer;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.function.Consumer;
+
+public class AK47 extends AssaultRifleItem {
+    public AK47(Properties pProperties) {
+        super(pProperties,
+                10f,
+                10f,
+                0.05f,
+                true,
+                ModMagazineItems.AK47_MAGAZINE.get(),
+                ModMagazineItems.AK47_MAGAZINE.get(),
+                80,
+                60,
+                3,
+                -1f,
+                -0.15f,
+                List.of(FireModes.SAFE, FireModes.SEMI, FireModes.AUTOMATIC),
+                6.4f,
+                0.16f,
+                2f,
+                "geo/ak47.geo.json",
+                "textures/item/ak47.png",
+                "animations/ak47.animation.json",
+                15000); //Not actual ticks, milliseconds I think?
+    }
+
+
+    @Override
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
+            private AssaultRifleRenderer renderer;
+
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                if(this.renderer == null) {
+                    renderer = new AssaultRifleRenderer();
+                }
+
+                return this.renderer;
+            }
+
+            @Override
+            public HumanoidModel.@Nullable ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
+                return WarMachines.TWO_HAND_GUN_ARM_POSE;
+            }
+        });
+
+    }
+
+
+    @Override
+    public Item gun() {
+        return ModGunItems.AK47.get();
+    }
+
+    @Override
+    public String fire1Animation() {
+        return "fire";
+    }
+
+    @Override
+    public String reloadAnimation() {
+        return "reload";
+    }
+
+    @Override
+    public String unloadAnimation() {
+        return "unload";
+    }
+
+    @Override
+    public String modelLocation() {
+        return "geo/ak47.geo.json";
+    }
+
+    @Override
+    public String textureLocation() {
+        return "textures/item/ak47.png";
+    }
+
+    @Override
+    public String animationLocation() {
+        return "animations/ak47.animation.json";
+    }
+
+}
